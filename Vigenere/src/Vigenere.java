@@ -2,104 +2,82 @@
 public class Vigenere {
 
 	char[] mensagem;
-	char[] chave;
-	char[] resultado;
-	char matriz[][];
-	char[] texto;
+	int[] vetChave;
+	int[] resultado;
 
-	public void CifraDeVigenere(String msg, String chave) {
-		
-		char[] chaveTemp = chave.toCharArray();
-		//System.out.println(chaveTemp);
-		this.chave = new char[msg.length()];
-		//System.out.println(msg.length());
+	public void CifraDeVigenere(String msg, int[] chave) {
+
+		this.vetChave = new int[msg.length()];
 		int cont = 0;
 
 		for (int i = 0; i < msg.length(); i++) {
-			this.chave[i] = chaveTemp[cont];
+			this.vetChave[i] = chave[cont];
 			cont++;
-			if (cont == chaveTemp.length) {
+			if (cont == chave.length) {
 				cont = 0;
 			}
-			//System.out.println(this.chave[i]);
 		}
 
-		TabelaVigenere t = new TabelaVigenere();
-		this.matriz = t.mat();
-		cifrar(msg);
+		resultado = cifrar(msg);
+		int res [] = decifrar(resultado);
+
+		System.out.println("Mensagem: "+msg);
+		System.out.println("Chave");
+		for (int i = 0; i < vetChave.length; i++) {
+			System.out.print(vetChave[i]+" ");	
+		}
+		System.out.println();
+		System.out.println("Cifrado:");
+		for (int i = 0; i < vetChave.length; i++) {
+			System.out.print(resultado[i]+" ");	
+		}
+		System.out.println();
+		System.out.println("Decifrado:");
+		for (int i = 0; i < vetChave.length; i++) {
+			System.out.print(res[i]+" ");	
+		}
 	}
 
-	public String cifrar(String msg) {
-		
+	public int[] cifrar(String msg) {
+
 		this.mensagem = msg.toCharArray();
-		char[] cifrado = new char[msg.length()];
+		int[] cifrado = new int[msg.length()];
 		//System.out.println(mensagem.length);
-		
-		String retorno = "";
-		int x, y;
 
+		int x;
+		//System.out.println("Cifrado");
 		for (int cont = 0; cont < mensagem.length; cont++) {
-			x = (int) this.mensagem[cont] - 97;
-			y = (int) this.chave[cont] - 97;
-			cifrado[cont] = this.matriz[x][y];
-			//System.out.println(x);
-			//System.out.println(y);
+			x = (int)this.mensagem[cont]-97;
+			
+			if ((x ^ vetChave[cont]) <= 26){
+				cifrado[cont] = (x ^ vetChave[cont]);
+				
+			}
+			else{
+				cifrado[cont] = (x ^ vetChave[cont])%26;
+			}
 		}
-		this.resultado = cifrado;
-
-		System.out.println(this.mensagem);
-		System.out.println(this.chave);
-		System.out.println(cifrado);
 
 		for (int i = 0; i < cifrado.length; i++) {
-			retorno += cifrado[i];
+			cifrado[i] +=97;
 		}
-
-		return retorno;
+		return cifrado;
 	}
-	
-	public String decifrar(String msg) {
-		char[] decifrado = new char[mensagem.length];
-		//System.out.println(decifrado.length);
-		String retorno = "";
-		int x = 0, y = 0;
 
+	public int[] decifrar(int[] cifrado) {
+		int[] decifrado = new int[cifrado.length];
+
+		int x;
 		for (int cont = 0; cont < mensagem.length; cont++) {
-			x = (int) this.mensagem[cont] - 97;
-			y = (int) this.chave[cont] - 97;
-			//System.out.println(x);
-			//System.out.println(y);
-			char[] coluna = new char[26];
-
-			for (int i = 0; i < 26; i++) {
-				coluna[i] = this.matriz[i][y];
-				//System.out.println(coluna[i]);
+			x = cifrado[cont];
+			
+			if ((x ^ vetChave[cont]) <= 122){
+				decifrado[cont] = (x ^ vetChave[cont]);
 			}
-
-			int a = 0;
-			boolean teste = false;
-			do {
-				if (coluna[a] == mensagem[cont]) {
-					break;
-				}
-				a++;
-			} while (teste == false);
-
-			decifrado[cont] = this.matriz[a][0];
-
-		}
-
-		for (int i = 0; i < decifrado.length; i++) {
-			retorno += decifrado[i];
-			//System.out.println(retorno);
-		}
-
-		//System.out.println(this.mensagem);
-		//System.out.println(this.chave);
-		System.out.println(decifrado);
-
-		this.resultado = decifrado;
-		//System.out.println(resultado);
-		return retorno;
+			else{
+				decifrado[cont] = (x ^ vetChave[cont])%122;
+			}
+		}		
+		return decifrado;
 	}
 }

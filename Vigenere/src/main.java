@@ -3,10 +3,9 @@ public class main {
 
 	public static void main(String[] args) {
 		 Vigenere aux = new Vigenere();
+		 TabelaVigenere tv = new TabelaVigenere();
 		 String msg = "wearediscoveredsaveyourself";
-		 String chave = "deceptive";
-		 aux.CifraDeVigenere(msg, chave);
-		 msg = aux.cifrar(msg);
-		 aux.decifrar(msg);
+		 int[] chave= tv.GeraChave();
+		 aux.CifraDeVigenere(msg, chave);	 
 	}
 }
